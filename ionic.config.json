@@ -1,5 +1,7 @@
 {
   "name": "mt-sync",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "vue"
 }
