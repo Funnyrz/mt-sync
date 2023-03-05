@@ -1,0 +1,6 @@
+{
+  "appId": "mt.sync",
+  "appName": "mt-sync",
+  "bundledWebRuntime": false,
+  "webDir": "dist"
+}

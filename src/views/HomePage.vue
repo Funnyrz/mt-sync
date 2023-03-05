@@ -3,12 +3,14 @@
 </template>
 
 <script>
+
 export default {
-  methods: {},
+  methods: {
+    scanner() {
+    },
+  },
   mounted() {},
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
