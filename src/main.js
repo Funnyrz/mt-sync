@@ -22,9 +22,8 @@ import "@ionic/vue/css/display.css";
 
 /* Theme variables */
 import "./theme/variables.css";
-import NutUI from "@nutui/nutui";
-import "@nutui/nutui/dist/style.css";
-const app = createApp(App).use(IonicVue).use(router).use(NutUI);
+
+const app = createApp(App).use(IonicVue).use(router);
 
 router.isReady().then(() => {
   app.mount("#app");

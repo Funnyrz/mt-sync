@@ -1,64 +1,45 @@
 <template>
-  <nut-tabbar @tab-switch="tabSwitch">
-    <nut-tabbar-item tab-title="标签">
-      <template #icon="props">
-        <img :src="props.active ? icon.active : icon.unactive" alt="" />
-      </template>
-    </nut-tabbar-item>
-    <nut-tabbar-item tab-title="标签">
-      <template #icon="props">
-        <img :src="props.active ? icon.active : icon.unactive" alt="" />
-      </template>
-    </nut-tabbar-item>
-    <nut-tabbar-item tab-title="标签">
-      <template #icon="props">
-        <img :src="props.active ? icon.active : icon.unactive" alt="" />
-      </template>
-    </nut-tabbar-item>
-  </nut-tabbar>
+  <ion-page class="scanner-hide">
+    <ion-tabs>
+      <ion-router-outlet></ion-router-outlet>
+      <ion-tab-bar slot="bottom">
+        <ion-tab-button tab="connect" href="/connect">
+          <ion-icon :icon="qrCode" />
+          <ion-label>连接</ion-label>
+        </ion-tab-button>
 
+        <ion-tab-button tab="device" href="/device">
+          <ion-icon :icon="desktop" />
+          <ion-label>设备</ion-label>
+        </ion-tab-button>
+
+        <ion-tab-button tab="setting" href="/setting">
+          <ion-icon :icon="settings" />
+          <ion-label>设置</ion-label>
+        </ion-tab-button>
+      </ion-tab-bar>
+    </ion-tabs>
+  </ion-page>
 </template>
 
 <script>
-import { BarcodeScanner } from "@capacitor-community/barcode-scanner";
-import { useBackButton } from "@ionic/vue";
+import { IonPage, IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonLabel, IonIcon } from '@ionic/vue';
+import { qrCode, desktop, settings } from 'ionicons/icons';
 export default {
+  components: { IonPage, IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonLabel, IonIcon },
   data() {
     return {
-      isStartScan: false,
+      qrCode,
+      desktop,
+      settings
     };
   },
   methods: {
-    stopScan() {
-      document.querySelector('body').classList.remove('scanner-active');
-      BarcodeScanner.showBackground();
-      BarcodeScanner.stopScan();
-    },
-    async startScan() {
-      document.querySelector('body').classList.add('scanner-active');
-      this.isStartScan = true;
-      await BarcodeScanner.checkPermission({ force: true });
 
-      // make background of WebView transparent
-      // note: if you are using ionic this might not be enough, check below
-      BarcodeScanner.hideBackground();
-
-      const result = await BarcodeScanner.startScan(); // start scanning and wait for a result
-
-      // if the result has content
-      if (result.hasContent) {
-        console.log(result.content); // log the raw scanned content
-      }
-    },
   },
 
   mounted() {
-    useBackButton(10, () => {
-      if (this.isStartScan) {
-        this.isStartScan = false;
-        this.stopScan();
-      }
-    });
+
   },
 };
 </script>
