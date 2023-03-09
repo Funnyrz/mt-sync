@@ -21,25 +21,72 @@ import { IonHeader, IonToolbar, IonTitle, IonContent, IonPage, IonIcon, IonButto
 import { qrCode } from 'ionicons/icons';
 import { io } from 'socket.io-client';
 import { Clipboard } from '@capacitor/clipboard';
-let socket;
+import { App } from '@capacitor/app';
+import { Toast } from '@capacitor/toast';
+
 export default {
     components: { IonHeader, IonToolbar, IonTitle, IonContent, IonPage, IonIcon, IonButton },
     data() {
         return {
             scaning: false,
-            qrCode
+            clipText: '',
+            qrCode,
+            socket: undefined,
+            readClipTimer: undefined
         }
     },
-    mounted() {
+    watch: {
+        clipText: function (val) {
+            if (this.socket) {
+                this.socket.emit('serverMsg', val)
+            } else {
+                this.showToast('设备未连接!')
+            }
+        },
+    },
+    async mounted() {
+        this.readClip()
+        App.addListener('appStateChange', ({ isActive }) => {
+            if (isActive) {
+                if (!this.socket) {
+                    this.showToast('设备未连接!')
+                }
+                this.readClip()
+            } else {
+                //程序后台运行了
+            }
+        });
         useBackButton(10, () => {
             if (this.scaning) {
                 this.scaning = false;
                 this.stopScan();
             }
         });
-       
     },
+
     methods: {
+        async showToast(msg) {
+            await Toast.show({
+                text: msg,
+            });
+        },
+        readClip() {
+            Clipboard.read().then((res) => {
+                const value = res.value
+                if (value && this.clipText !== value) {
+                    this.clipText = value
+                }
+            })
+        },
+        listenClientMsg(socket) {
+            //   接收服务端的消息
+            socket.on('clientMsg', (data) => {
+                console.log(data);
+                Clipboard.write({
+                    string: data
+                })
+            })
+        },
         stopScan() {
             document.querySelector('body').classList.remove('qrscanner');
             BarcodeScanner.showBackground();
@@ -57,13 +104,13 @@ export default {
             if (result.hasContent) {
                 this.stopScan();
                 this.scaning = false
-                console.log();
-                socket = io.connect('http://' + result.content, {
+                this.socket = io.connect('http://' + result.content, {
                     reconnectionDelayMax: 10000,
                     query: {
                         "device": "小米10U"
                     }
                 })
+                this.listenClientMsg(this.socket)
             }
         },
 
