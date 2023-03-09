@@ -17,10 +17,13 @@
 <script>
 import { BarcodeScanner } from "@capacitor-community/barcode-scanner";
 import { useBackButton } from "@ionic/vue";
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonPage, IonIcon } from '@ionic/vue';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonPage, IonIcon, IonButton } from '@ionic/vue';
 import { qrCode } from 'ionicons/icons';
+import { io } from 'socket.io-client';
+import { Clipboard } from '@capacitor/clipboard';
+let socket;
 export default {
-    components: { IonHeader, IonToolbar, IonTitle, IonContent, IonPage, IonIcon },
+    components: { IonHeader, IonToolbar, IonTitle, IonContent, IonPage, IonIcon, IonButton },
     data() {
         return {
             scaning: false,
@@ -34,6 +37,7 @@ export default {
                 this.stopScan();
             }
         });
+       
     },
     methods: {
         stopScan() {
@@ -51,10 +55,18 @@ export default {
             const result = await BarcodeScanner.startScan();
 
             if (result.hasContent) {
+                this.stopScan();
                 this.scaning = false
-                console.log(result.content);
+                console.log();
+                socket = io.connect('http://' + result.content, {
+                    reconnectionDelayMax: 10000,
+                    query: {
+                        "device": "小米10U"
+                    }
+                })
             }
         },
+
     }
 }
 </script>
