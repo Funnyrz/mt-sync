@@ -23,7 +23,23 @@ import { io } from 'socket.io-client';
 import { Clipboard } from '@capacitor/clipboard';
 import { App } from '@capacitor/app';
 import { Toast } from '@capacitor/toast';
-
+// import { Filesystem } from '@capacitor/filesystem';
+// import { SendIntent } from "send-intent";
+// SendIntent.checkSendIntentReceived().then((result) => {
+//     if (result) {
+//         console.log('SendIntent received');
+//         console.log(JSON.stringify(result));
+//     }
+//     if (result.url) {
+//         let resultUrl = decodeURIComponent(result.url);
+//         console.log("文件地址:" + resultUrl);
+//         Filesystem.readFile({ path: resultUrl })
+//             .then((content) => {
+//                 console.log(content.data);
+//             })
+//             .catch((err) => console.error(err));
+//     }
+// }).catch(err => console.error(err));
 export default {
     components: { IonHeader, IonToolbar, IonTitle, IonContent, IonPage, IonIcon, IonButton },
     data() {
