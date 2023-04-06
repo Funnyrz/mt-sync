@@ -23,6 +23,8 @@ import { io } from 'socket.io-client';
 import { Clipboard } from '@capacitor/clipboard';
 import { App } from '@capacitor/app';
 import { Toast } from '@capacitor/toast';
+import { Device } from '@capacitor/device';
+
 // import { Filesystem } from '@capacitor/filesystem';
 // import { SendIntent } from "send-intent";
 // SendIntent.checkSendIntentReceived().then((result) => {
@@ -120,16 +122,27 @@ export default {
             if (result.hasContent) {
                 this.stopScan();
                 this.scaning = false
+                const deviceInfo = await this.getDeviceInfo()
+                console.log(deviceInfo);
                 this.socket = io.connect('http://' + result.content, {
                     reconnectionDelayMax: 10000,
                     query: {
-                        "device": "小米10U"
+                        deviceName:deviceInfo.name,
+                        deviceModel:deviceInfo.model,
+                        deviceId: deviceInfo.id.uuid
                     }
                 })
                 this.listenClientMsg(this.socket)
             }
-        },
-
+        }, async getDeviceInfo() {
+            const info = await Device.getInfo();
+            const id = await Device.getId();
+            const obj = {
+                ...info,
+                id
+            }
+            return obj
+        }
     }
 }
 </script>

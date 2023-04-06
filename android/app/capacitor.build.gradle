@@ -12,6 +12,7 @@ dependencies {
     implementation project(':capacitor-community-barcode-scanner')
     implementation project(':capacitor-app')
     implementation project(':capacitor-clipboard')
+    implementation project(':capacitor-device')
     implementation project(':capacitor-filesystem')
     implementation project(':capacitor-haptics')
     implementation project(':capacitor-keyboard')
